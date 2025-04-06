@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+    <title>ログアウトページ | 英語学習アプリケーション</title>
+</head>
+<body>
+<h1 class="mt-3">📚 英語学習アプリケーション: 文学の庭 🍃</h1>
+<form action="#" th:action="@{/logout}" method="post">
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">ログアウト</button>
+    </div>
+</form>
+</body>
+</html>

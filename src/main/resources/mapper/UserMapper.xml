@@ -1,0 +1,7 @@
+<mapper namespace="com.example.its.domain.auth.UserMapper">
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM users WHERE username = #{username}
+    </delete>
+
+</mapper>

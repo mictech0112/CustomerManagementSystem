@@ -1,0 +1,15 @@
+<mapper namespace="com.example.its.domain.auth.UserRepository">
+
+    <!-- ユーザーを更新する SQL マッピング -->
+    <update id="update" parameterType="com.example.its.domain.auth.User">
+        UPDATE users
+        SET password = #{password}, authority = #{authority}
+        WHERE username = #{username}
+    </update>
+
+    <!-- ユーザーを削除する SQL マッピング -->
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM users WHERE username = #{username}
+    </delete>
+
+</mapper>

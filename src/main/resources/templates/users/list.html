@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+  <title>ユーザー一覧 | 英語学習アプリケーション</title>
+</head>
+<body>
+<h1 class="mt-3">ユーザー一覧</h1>
+<a href="../index.html" th:href="@{/}">トップページ</a>
+<a href="../users/creationForm" th:href="@{/users/creationForm}">新規作成</a>
+
+<!-- 検索フォーム -->
+<form action="/users/search" method="get" class="mt-3">
+  <label for="searchInput">検索: </label>
+  <input type="text" id="searchInput" name="keyword">
+  <button type="submit" class="btn btn-primary">検索</button>
+</form>
+
+<!-- ユーザー一覧テーブル -->
+<table class="table">
+  <thead>
+  <tr>
+    <th>ユーザー名</th>
+    <th>権限</th>
+    <th>編集</th>
+    <th>削除</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="user : ${userList}" th:if="${user.deletedAt == null}" th:id="'userRow_' + ${user.id}">
+    <td th:text="${user.username}">(username)</td>
+    <td th:text="${user.authority}">(authority)</td>
+    <td><a th:href="@{/users/{username}/editForm(username=${user.username})}">編集</a></td>
+    <td>
+      <form id="deleteForm" th:action="@{/users/{username}/delete(username=${user.username})}" method="post">
+        <button type="button" onclick="deleteUser(this)">削除</button>
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+        <input type="hidden" name="userId" th:value="${user.id}"/> <!-- ユーザーIDを追加 -->
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var deletedUserIds = JSON.parse(localStorage.getItem("deletedUserIds")) || [];
+    deletedUserIds.forEach(function(userId) {
+      var deletedRow = document.getElementById("userRow_" + userId);
+      if (deletedRow) {
+        deletedRow.style.display = "none";
+      }
+    });
+  });
+  function deleteUser(button) {
+      var form = button.parentElement;
+      var formData = new FormData(form);
+
+      fetch(form.getAttribute('action'), {
+          method: 'POST',
+          body: formData
+      }).then(function (response) {
+          if (response.ok) {
+              // レスポンスが成功した場合に行う処理
+              var userId = form.querySelector("input[name='userId']").value;
+              document.getElementById("userRow_" + userId).style.display = "none"; // 行を非表示にする
+              var deletedUserIds = JSON.parse(localStorage.getItem("deletedUserIds")) || [];
+              deletedUserIds.push(userId);
+              localStorage.setItem("deletedUserIds", JSON.stringify(deletedUserIds));
+          } else {
+              // エラーの場合に行う処理
+              console.error('削除エラー');
+          }
+      }).catch(function (error) {
+          // ネットワークエラーなど、リクエスト自体が失敗した場合に行う処理
+          console.error('ネットワークエラー', error);
+      });
+  }
+</script>
+</body>
+</html>

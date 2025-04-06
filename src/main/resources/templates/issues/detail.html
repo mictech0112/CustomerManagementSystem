@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+    <title>作品詳細 | 英語学習アプリケーション</title>
+</head>
+<body style="font-family: 'Hiragino Mincho ProN', serif; background-color: #f9f9f9; text-align: center;">
+<h1 class="mt-3">作品詳細️</h1>
+<a href="./list.html" th:href="@{/issues}" style="display: inline-block; margin-top: 1em; font-size: 1em; color: #007bff;">⬅ 一覧に戻る</a>
+<div class="mt-3" style="width: 70%; margin: auto;">
+    <div class="card mt-3" th:if="${issue != null}">
+        <div class="card-body">
+            <h2 class="card-title mt-3" style="font-size: 2em; font-weight: bold; margin-bottom: 0.5em; color: #006400;" th:text="'題名: ' + ${issue.summary}"></h2>
+            <p class="card-text mt-3" style="font-size: 1.2em; line-height: 1.6; color: #4b0082;" th:text="'説明: ' + ${issue.description}"></p>
+            <!-- 画像がある場合のみ表示 -->
+            <!-- base64エンコードは重たいので削除 -->
+            <img th:if="${issue.image}" class="card-img-top" th:src="@{'/issues/' + ${issue.id} + '/image'}" alt="issue image">
+        </div>
+    </div>
+    <div th:if="${issue == null}" class="mt-3">
+        <p>Issueが見つかりません</p>
+    </div>
+    <!-- CSVエクスポートリンク -->
+    <div th:if="${isAdmin}">
+        <a th:href="@{'/issues/' + ${issue.id} + '/export'}" style="display: inline-block; margin-top: 1em; font-size: 1em; color: #007bff;">CSVエクスポート</a>
+    </div>
+</div>
+</body>
+</html>
